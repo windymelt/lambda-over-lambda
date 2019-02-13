@@ -35,9 +35,6 @@ exec ros -Q -- $0 "$@"
 ]+
 " content ""))
 
-(defun swap-main (content)
-  (cl-ppcre:regex-replace "\\(defun main" content "(defun original-main"))
-
 (defun %log (str &rest rest)
   (apply #'format (append (list *error-output* (format nil "*** ~A~%" str)) rest)))
 
@@ -59,8 +56,9 @@ exec ros -Q -- $0 "$@"
          (temporary-file-path (uiop:merge-pathnames* #P"temporary.ros" *project-dir*))
          (output-file-path (uiop:merge-pathnames* "out.zip" *default-pathname-defaults*)))
     (%log "Writing temporary file into ~A ..." temporary-file-path)
+    ;; TODO: source main function should be able to receive/return many format
     (with-open-file (s temporary-file-path :direction :output)
-      (djula:render-template* *template* s :body (swap-main (delete-shebang contents)) :ros-package (string-upcase ros-package)))
+      (djula:render-template* *template* s :body (delete-shebang contents) :ros-package (string-upcase ros-package)))
     (%log "Temporary roswell script generated.")
     (%log "Building ~A with docker-compose (it may takes a while) ..." output-file-path)
     ;; TODO: Kill when SIGHUP
