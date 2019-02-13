@@ -1,0 +1,9 @@
+version: '3'
+services:
+  cl:
+    container_name: cl
+    build: .
+    volumes:
+      - .:/app
+      - /tmp:/tmp/lol
+    command: sh
