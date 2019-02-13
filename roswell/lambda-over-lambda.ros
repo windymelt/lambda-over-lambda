@@ -12,7 +12,6 @@ exec ros -Q -- $0 "$@"
   (:use :cl))
 (in-package :ros.script.lambda-over-lambda.3758533090)
 
-;; cd `dirname $0`
 (defvar *command-dir*)
 (defvar *project-dir*)
 (defvar *template*)
@@ -54,6 +53,7 @@ exec ros -Q -- $0 "$@"
   (let* ((contents (file-get-contents *ros-file*))
          (ros-package (get-ros-package contents))
          (temporary-file-path (uiop:merge-pathnames* #P"temporary.ros" *project-dir*))
+         ;; TODO: specify output artifact path; default is out.zip in current directory
          (output-file-path (uiop:merge-pathnames* "out.zip" *default-pathname-defaults*)))
     (%log "Writing temporary file into ~A ..." temporary-file-path)
     ;; TODO: source main function should be able to receive/return many format
