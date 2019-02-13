@@ -12,6 +12,21 @@ exec ros -Q -- $0 "$@"
   (:use :cl))
 (in-package :ros.script.lambda-over-lambda.3758533090)
 
+(defparameter *document* "
+Lambda-over-Lambda: Roswell script converter for AWS Lambda.
+This script converts your roswell script into out.zip
+to upload to AWS Lambda Custom Runtime.
+
+Main function inside source script should...
+- Receive (handler content) as ARGV, where content is JSOWN object
+- Return JSOWN object
+
+To know about JSOWN, see https://github.com/madnificent/jsown
+
+")
+
+;; TODO: distinguish null and/or false and/or [] of CONTENT
+
 (defvar *command-dir*)
 (defvar *project-dir*)
 (defvar *template*)
@@ -43,9 +58,15 @@ exec ros -Q -- $0 "$@"
   (djula:add-template-directory (uiop:merge-pathnames* "../templates/" *command-dir*))
   (setf *template* (djula:compile-template* "template.ros")))
 
+(defun print-help-and-die ()
+  (uiop:die 1 "~A~%Usage: ~A <source.ros>~%" *document* *load-truename*))
+
 (defun main (&rest argv)
   (declare (ignorable argv))
   (setf *ros-file* (elt argv 0))
+  (unless *ros-file*
+    (%log "You should provide .ros file as 1st argument.")
+    (print-help-and-die))
   (prepare-variables)
   (uiop:chdir (../ *command-dir*))
   ;; rosファイルを変換して中間rosファイルを生成する
