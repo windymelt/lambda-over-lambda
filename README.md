@@ -38,6 +38,10 @@ Your `MAIN` function should **receive** handler and event object.
 
 - Handler is passed as string.
 - Event is passed as [JSOWN](https://github.com/madnificent/jsown) object.
+  - `true` is translated into `t`.
+  - **`false` is translated into `:f`.**
+  - `null` is translated into `:null`.
+  - `[]` is translated into `nil`.
 
 ```lisp
 (defun main (handler event)
