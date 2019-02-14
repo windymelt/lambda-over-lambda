@@ -21,40 +21,40 @@ exec ros -Q -- $0 "$@"
   (:use :cl))
 (in-package :ros.script.bootstrap.3758360166)
 
-(defvar *handler*)
-(defvar *lambda-task-root*)
-(defvar *aws-lambda-runtime-api*)
+(defvar *%handler*)
+(defvar *%lambda-task-root*)
+(defvar *%aws-lambda-runtime-api*)
 
-(defun load-envvar ()
+(defun %load-envvar ()
   "Loads environment variables to work lambda script correctly."
-  (setf *handler*
+  (setf *%handler*
         (uiop:getenv "_HANDLER"))
-  (setf *lambda-task-root*
+  (setf *%lambda-task-root*
         (uiop:getenv "LAMBDA_TASK_ROOT"))
-  (setf *aws-lambda-runtime-api*
+  (setf *%aws-lambda-runtime-api*
         (uiop:getenv "AWS_LAMBDA_RUNTIME_API")))
 
-(defun set-json-settings ()
+(defun %set-json-settings ()
   (setf jsown::*parsed-true-value* t)
   (setf jsown::*parsed-false-value* :f)
   (setf jsown::*parsed-null-value* :null)
   (setf jsown::*parsed-empty-list-value* nil))
 
-(defun main-loop (handler)
+(defun %main-loop (handler)
   "Main loop processes lambda requests. Specify function designator with HANDLER."
   (declare (ignorable handler))
   (let ((next-endpoint
-          (format nil "http://~A/2018-06-01/runtime/invocation/next" *aws-lambda-runtime-api*)))
+          (format nil "http://~A/2018-06-01/runtime/invocation/next" *%aws-lambda-runtime-api*)))
     (loop for (body status headers . nil) = (multiple-value-list (dex:get next-endpoint))
           as request-id = (gethash "lambda-runtime-aws-request-id" headers)
           as response = (funcall (find-symbol "MAIN" "{{ros-package}}") handler (jsown:parse body))
-          as response-endpoint = (format nil "http://~A/2018-06-01/runtime/invocation/~A/response" *aws-lambda-runtime-api* request-id)
+          as response-endpoint = (format nil "http://~A/2018-06-01/runtime/invocation/~A/response" *%aws-lambda-runtime-api* request-id)
           do (dex:post response-endpoint :content (jsown:to-json response)))))
 
 ;; lambda entrypoint
 (defun main ()
-  (load-envvar)
-  (set-json-settings)
-  (uiop:chdir *lambda-task-root*)
-  (main-loop *handler*))
+  (%load-envvar)
+  (%set-json-settings)
+  (uiop:chdir *%lambda-task-root*)
+  (%main-loop *%handler*))
 ;;; vim: set ft=lisp lisp:
