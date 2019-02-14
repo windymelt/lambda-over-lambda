@@ -34,13 +34,13 @@ You can get help by `./roswell/lambda-over-lambda.ros` without any arguments.
 
 ### Arguments
 
-Your `MAIN` function should **receive** handler and content.
+Your `MAIN` function should **receive** handler and event object.
 
 - Handler is passed as string.
-- Content is passed as [JSOWN](https://github.com/madnificent/jsown) object.
+- Event is passed as [JSOWN](https://github.com/madnificent/jsown) object.
 
 ```lisp
-(defun main (handler content)
+(defun main (handler event)
   ...)
 ```
 
@@ -49,7 +49,7 @@ Your `MAIN` function should **receive** handler and content.
 Your `MAIN` function should **return** [JSOWN](https://github.com/madnificent/jsown) object.
 
 ```lisp
-(defun main (handler content)
+(defun main (handler event)
   ...
   '(:obj ("result" . "ok")))
 ```

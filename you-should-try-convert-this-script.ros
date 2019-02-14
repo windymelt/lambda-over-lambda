@@ -16,5 +16,5 @@ exec ros -Q -- $0 "$@"
   (declare (ignorable argv))
   `(:obj ("result" . "ok")
          ("handler" . ,(first argv))
-         ("content" . ,(second argv))))
+         ("event" . ,(second argv))))
 ;;; vim: set ft=lisp lisp:

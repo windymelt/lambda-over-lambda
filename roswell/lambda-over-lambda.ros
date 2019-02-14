@@ -18,7 +18,7 @@ This script converts your roswell script into out.zip
 to upload to AWS Lambda Custom Runtime.
 
 Main function inside source script should...
-- Receive (handler content) as ARGV, where content is JSOWN object
+- Receive (handler event) as ARGV, where event is JSOWN object
 - Return JSOWN object
 
 To know about JSOWN, see https://github.com/madnificent/jsown
@@ -68,7 +68,7 @@ To know about JSOWN, see https://github.com/madnificent/jsown
   (prepare-variables)
   (uiop:chdir (../ *command-dir*))
   ;; rosファイルを変換して中間rosファイルを生成する
-  ;; 渡されるrosファイルは，第一引数にhandler，第二引数にcontentが入って渡されるという想定
+  ;; 渡されるrosファイルは，第一引数にhandler，第二引数にeventが入って渡されるという想定
   (let* ((contents (file-get-contents *ros-file*))
          (ros-package (get-ros-package contents))
          (temporary-file-path (uiop:merge-pathnames* #P"temporary.ros" *project-dir*))
