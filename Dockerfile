@@ -23,9 +23,10 @@ RUN ln -s ${HOME}/.roswell/local-projects work
 ENV PATH /root/.roswell/bin:${PATH}
 
 RUN yum -y install openssl-devel
+RUN yum -y update
 
-RUN ros install ccl-bin/1.11
-RUN ros use ccl-bin/1.11
+RUN ros install sbcl/1.5.3
+RUN ros use sbcl/1.5.3
 
 # Assuming whole application directory is mounted as /app
 WORKDIR /app/
